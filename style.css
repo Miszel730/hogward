@@ -2,3 +2,45 @@ article {
   background: red;
   margin-top: 10px;
 }
+
+section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 2rem;
+  margin: 1rem 5rem;
+}
+
+article img {
+  align-self: center;
+  width: 10rem;
+  height: 10rem;
+  padding-bottom: 1rem;
+  cursor: pointer;
+  border-radius: 30%;
+}
+article {
+  position: relative;
+  background-color: #9b4f0f;
+  text-align: center;
+  display: flex;
+  flex-flow: column;
+  padding: 1rem 2rem;
+  margin: 1rem 0;
+  box-shadow: 9px 7px;
+}
+
+/* .modal_bg {
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.modal-content {
+  background-color: #fefefe;
+  border: 1px solid #7c1f17;
+  margin: 6em;
+  padding: 2em;
+} */
