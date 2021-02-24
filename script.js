@@ -9,6 +9,7 @@ let filteredList = null;
 let familyList = null;
 let studentList = null;
 let displayStudentList = null;
+let expelledStudents = [];
 let listSortedBy = "firstName";
 
 function start() {
@@ -60,6 +61,7 @@ const recivedData = (allStudents) => {
     }
   });
   filteredList = studentList;
+  displayStudentList = studentList;
   studentList.forEach(showStudent);
   filterHouses();
   sortingNames();
@@ -209,6 +211,28 @@ function showStudent(oneStudent) {
   myCopy.querySelector(".middlename").textContent = oneStudent.middleName;
   myCopy.querySelector(".nickname").textContent = oneStudent.nickName;
   myCopy.querySelector(".lastname").textContent = oneStudent.lastName;
+  myCopy.querySelector(".expell").addEventListener("click", function () {
+    console.log(this.parentNode.children[1]);
+    const firstnameOfElement = this.parentNode.children[1].textContent;
+    const newStudentList = studentList.filter((student) => {
+      return student.firstName !== firstnameOfElement;
+    });
+    const expelledStudent = studentList.filter((student) => {
+      return student.firstName === firstnameOfElement;
+    });
+    const newFilteredList = filteredList.filter((student) => {
+      return student.firstName !== firstnameOfElement;
+    });
+    const newDisplayedList = displayStudentList.filter((student) => {
+      return student.firstName !== firstnameOfElement;
+    });
+    clearHtmlList();
+    studentList = newStudentList;
+    filteredList = newFilteredList;
+    displayStudentList = newDisplayedList;
+    expelledStudents.push(expelledStudent[0]);
+    displayStudentList.forEach(showStudent);
+  });
 
   targetStudentImage();
 
@@ -227,6 +251,7 @@ const createStudentObject = (student) => {
     middleName: null,
     nickName: null,
     lastName: "",
+    gender: "",
     house: "",
   };
 
@@ -267,6 +292,7 @@ const createStudentObject = (student) => {
     //last name
     StudentObject.lastName = secondWord && capitalization(secondWord);
   }
+  StudentObject.gender = student.gender;
 
   return StudentObject;
 };
