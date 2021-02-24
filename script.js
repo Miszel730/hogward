@@ -9,6 +9,7 @@ let filteredList = null;
 let familyList = null;
 let studentList = null;
 let displayStudentList = null;
+let listSortedBy = "firstName";
 
 function start() {
   fetch("https://petlatkea.dk/2021/hogwarts/families.json")
@@ -38,6 +39,9 @@ const clearHtmlList = () => {
     myNode.removeChild(myNode.lastElementChild);
   }
 };
+function getUniqueListBy(arr, key) {
+  return [...new Map(arr.map((item) => [item[key], item])).values()];
+}
 
 const recivedData = (allStudents) => {
   studentList = allStudents.map((student) => createStudentObject(student));
@@ -84,7 +88,9 @@ const sortBy = (students, sortBy) => {
     let withLastName = students
       .filter((student) => student.lastName !== undefined)
       .sort((a, b) => a.lastName.localeCompare(b.lastName));
-    withLastName.push(noLastName[0]);
+    if (noLastName.length) {
+      withLastName.push(noLastName[0]);
+    }
     return withLastName;
   } else {
     return filteredList;
@@ -102,6 +108,7 @@ const sortingNames = () => {
       displayStudentList = sortBy(displayStudentList, value);
     }
     console.log(displayStudentList);
+    listSortedBy = value;
     clearHtmlList();
 
     displayStudentList.forEach(showStudent);
@@ -130,17 +137,41 @@ const searchStudent = () => {
     }
     inputValueLength = event.target.value.length;
     if (displayStudentList === null || !displayStudentList.length) {
-      displayStudentList = studentList.filter((student) =>
+      let filteredByFirstname = studentList.filter((student) =>
         student.firstName.toLowerCase().includes(inputValue)
       );
+      let filteredByLastName = studentList.filter((student) => {
+        if (student.lastName === undefined) {
+          return false;
+        }
+        return student.lastName.toLowerCase().includes(inputValue);
+      });
+      displayStudentList = getUniqueListBy(
+        filteredByFirstname.concat(filteredByLastName),
+        "firstName"
+      );
       clearHtmlList();
-      sortBy(displayStudentList, "lastName").forEach(showStudent);
+      sortBy(displayStudentList, listSortedBy).forEach(showStudent);
     } else {
-      displayStudentList = displayStudentList.filter((student) =>
+      let filteredByFirstname = displayStudentList.filter((student) =>
         student.firstName.toLowerCase().includes(inputValue)
       );
+      let filteredByLastName = displayStudentList.filter((student) => {
+        if (student.lastName === undefined) {
+          return false;
+        }
+        return student.lastName.toLowerCase().includes(inputValue);
+      });
+      displayStudentList = getUniqueListBy(
+        filteredByFirstname.concat(filteredByLastName),
+        "firstName"
+      );
+
       clearHtmlList();
-      sortBy(displayStudentList, "lastName").forEach(showStudent);
+      //lastName sie sypie na psach => kutas
+      const sortTest = sortBy(displayStudentList, listSortedBy);
+      sortTest.forEach(showStudent);
+      console.log(sortTest);
     }
     console.log(inputValue);
   });
