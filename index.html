@@ -22,6 +22,17 @@
         <option value="lastName" class="lastName">By lastname</option>
         <option value="default" class="default">Reset</option>
       </select>
+      <div id="main-info">
+        <div class="each-house">
+          <div class="gryffindor">Gryffindor:</div>
+          <div class="hufflepuff">Hufflepuff:</div>
+          <div class="slytherin">Slytherin:</div>
+          <div class="ravenclaw">Ravenclaw:</div>
+        </div>
+        <div class="total-num">Total:</div>
+        <div class="expel-stud">Expalled:</div>
+        <div class="displayed">All displayed:</div>
+      </div>
 
       <section id="list">
         <template id="studentTemplate">
@@ -31,8 +42,10 @@
             <div class="lastname"></div>
             <div class="middlename"></div>
             <div class="nickname"></div>
+            <div class="gender"></div>
             <div class="house"></div>
             <button class="expell">expell</button>
+            <input type="checkbox" class="prefect" />
           </article>
         </template>
       </section>

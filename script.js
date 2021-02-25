@@ -4,6 +4,14 @@
 const filterHouse = document.querySelector("#filterConteiner");
 const filterName = document.querySelector(".sort");
 const searchField = document.querySelector("#searchByName");
+const mainInfo = document.querySelector("#main-info");
+const eachHouse = document.querySelector(".each-house");
+let prefectsInTheHouses = {
+  gryffindor: [],
+  hufflepuff: [],
+  slytherin: [],
+  ravenclaw: [],
+};
 let inputValueLength = null;
 let filteredList = null;
 let familyList = null;
@@ -26,6 +34,7 @@ function start() {
     .then(function (data) {
       // console.log(data);
       recivedData(data);
+      getNumberOfStudents();
     });
 }
 const createList = (data) => {
@@ -39,6 +48,7 @@ const clearHtmlList = () => {
     }
     myNode.removeChild(myNode.lastElementChild);
   }
+  getNumberOfStudents();
 };
 function getUniqueListBy(arr, key) {
   return [...new Map(arr.map((item) => [item[key], item])).values()];
@@ -170,13 +180,27 @@ const searchStudent = () => {
       );
 
       clearHtmlList();
-      //lastName sie sypie na psach => kutas
       const sortTest = sortBy(displayStudentList, listSortedBy);
       sortTest.forEach(showStudent);
       console.log(sortTest);
     }
     console.log(inputValue);
   });
+};
+//display main informations about the list
+const getNumberOfStudents = () => {
+  mainInfo.querySelector(".total-num").textContent = studentList.length;
+  mainInfo.querySelector(".expel-stud").textContent = expelledStudents.length;
+  mainInfo.querySelector(".displayed").textContent = displayStudentList.length;
+
+  //houses
+  for (let i = 0; i < eachHouse.children.length; i++) {
+    let houseElem = eachHouse.children[i];
+    let studentsInTheHouse = studentList.filter((elem) => {
+      return elem.house.toLowerCase() === houseElem.className;
+    });
+    houseElem.textContent = studentsInTheHouse.length;
+  }
 };
 
 const filterStudentListByHouses = (house) => {
@@ -188,6 +212,42 @@ const filterStudentListByHouses = (house) => {
   });
   return newStudentList;
 };
+
+function addPrefect() {
+  console.log(this);
+  let house = this.parentNode.children[6].textContent.toLowerCase();
+  let gender = this.parentNode.children[5].textContent;
+  let firstName = this.parentNode.children[1].textContent;
+  let potentialPrefect = studentList.filter((prefect) => {
+    return prefect.firstName === firstName;
+  });
+  let prefectCheck = prefectsInTheHouses[house].filter((prefect) => {
+    return prefect.firstName === firstName;
+  });
+  console.log(prefectsInTheHouses);
+  if (prefectCheck.length > 0) {
+    prefectsInTheHouses[house] = prefectsInTheHouses[house].filter(
+      (prefect) => {
+        return prefect.firstName !== firstName;
+      }
+    );
+    console.log(prefectsInTheHouses[house]);
+    return;
+  }
+
+  if (prefectsInTheHouses[house].length === 2) {
+    return;
+  } else if (prefectsInTheHouses[house].length === 1) {
+    if (prefectsInTheHouses[house][0].gender === gender) {
+      return;
+    } else {
+      prefectsInTheHouses[house].push(potentialPrefect[0]);
+    }
+  } else {
+    prefectsInTheHouses[house].push(potentialPrefect[0]);
+  }
+  console.log(prefectsInTheHouses);
+}
 
 function showStudent(oneStudent) {
   const parent = document.querySelector("template#studentTemplate").content;
@@ -211,6 +271,8 @@ function showStudent(oneStudent) {
   myCopy.querySelector(".middlename").textContent = oneStudent.middleName;
   myCopy.querySelector(".nickname").textContent = oneStudent.nickName;
   myCopy.querySelector(".lastname").textContent = oneStudent.lastName;
+  myCopy.querySelector(".gender").textContent = oneStudent.gender;
+  myCopy.querySelector(".prefect").addEventListener("change", addPrefect);
   myCopy.querySelector(".expell").addEventListener("click", function () {
     console.log(this.parentNode.children[1]);
     const firstnameOfElement = this.parentNode.children[1].textContent;
