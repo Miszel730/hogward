@@ -4,6 +4,10 @@
     <link rel="stylesheet" href="style.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
+      rel="stylesheet"
+    />
     <title>Document</title>
   </head>
   <body>
@@ -44,20 +48,26 @@
             <div class="nickname"></div>
             <div class="gender"></div>
             <div class="house"></div>
+            <div class="blood"></div>
             <button class="expell">expell</button>
-            <input type="checkbox" class="prefect" />
+            <label class="prefect-label" for="prefect">Prefect</label>
+            <input type="checkbox" class="prefect" name="prefect" />
+            <label class="inq-label" for="inq-squad">Inquistorial Squad</label>
+            <input type="checkbox" class="inq-squad" name="inq-squad" />
+            <button id="modalBtn">Details</button>
           </article>
         </template>
       </section>
-      <div class="modal_bg hide">
-        <div class="modal-content">
-          <img class="picture" />
+      <div id="modal_bg" class="modal-template">
+        <div id="modal" class="modal-content">
+          <button class="close-modal">x</button>
+          <img class="modal-picture" />
           <div class="name">name</div>
           <div class="bloodtype">blood type</div>
           <!-- <div class="attributes">Attributes</div> -->
-          <button class="expell/unexpell">expell</button>
-          <button class="add/remove-prefect">Prefect</button>
-          <button class="squad">squad</button>
+          <button class="expell2">Expell student</button>
+          <button class="add-remove-prefect">Make prefect</button>
+          <button class="squad">Inquistorial squad</button>
         </div>
       </div>
     </main>

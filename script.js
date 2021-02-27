@@ -6,6 +6,7 @@ const filterName = document.querySelector(".sort");
 const searchField = document.querySelector("#searchByName");
 const mainInfo = document.querySelector("#main-info");
 const eachHouse = document.querySelector(".each-house");
+
 let prefectsInTheHouses = {
   gryffindor: [],
   hufflepuff: [],
@@ -13,6 +14,7 @@ let prefectsInTheHouses = {
   ravenclaw: [],
 };
 let inputValueLength = null;
+let inquistorialSquad = [];
 let filteredList = null;
 let familyList = null;
 let studentList = null;
@@ -83,7 +85,7 @@ const checkIfImageExists = (imageName, firstName, lastName) => {
   let url_image = `./images/${imageName}.png`;
   image.src = url_image;
 
-  if (image.height === 0) {
+  if (image.width === 0) {
     return (imageName = `${lastName.toLowerCase()}_${firstName.toLowerCase()}`);
   } else {
     return imageName;
@@ -213,11 +215,11 @@ const filterStudentListByHouses = (house) => {
   return newStudentList;
 };
 
-function addPrefect() {
-  console.log(this);
-  let house = this.parentNode.children[6].textContent.toLowerCase();
-  let gender = this.parentNode.children[5].textContent;
-  let firstName = this.parentNode.children[1].textContent;
+function addPrefect(event) {
+  console.log(event.target);
+  let house = event.target.parentNode.children[6].textContent.toLowerCase();
+  let gender = event.target.parentNode.children[5].textContent;
+  let firstName = event.target.parentNode.children[1].textContent;
   let potentialPrefect = studentList.filter((prefect) => {
     return prefect.firstName === firstName;
   });
@@ -249,6 +251,119 @@ function addPrefect() {
   console.log(prefectsInTheHouses);
 }
 
+// inquistorial squad
+
+function addInquistorial(event) {
+  let firstName = event.target.parentNode.children[1].textContent;
+  let potentialInq = studentList.filter((inquistorial) => {
+    return inquistorial.firstName === firstName;
+  });
+  let inqCheck = inquistorialSquad.filter((inquistorial) => {
+    return inquistorial.firstName === firstName;
+  });
+  console.log(inquistorialSquad);
+  if (inqCheck.length > 0) {
+    inquistorialSquad = inquistorialSquad.filter((inquistorial) => {
+      return inquistorial.firstName !== firstName;
+    });
+    console.log(inquistorialSquad);
+    return;
+  }
+
+  if (
+    potentialInq[0].bloodType === "pure" ||
+    potentialInq.house === "slytherin"
+  ) {
+    inquistorialSquad.push(potentialInq[0]);
+    return;
+  }
+}
+
+const expellStudentFromList = (studentsList, studentName) => {
+  return studentsList.filter((student) => {
+    return student.firstName !== studentName;
+  });
+};
+const expellStudent = (event) => {
+  const firstnameOfElement = event.target.parentNode.children[1].textContent;
+  const newStudentList = expellStudentFromList(studentList, firstnameOfElement);
+  const expelledStudent = studentList.filter((student) => {
+    return student.firstName === firstnameOfElement;
+  });
+  const newFilteredList = expellStudentFromList(
+    filteredList,
+    firstnameOfElement
+  );
+  const newDisplayedList = expellStudentFromList(
+    displayStudentList,
+    firstnameOfElement
+  );
+  clearHtmlList();
+  studentList = newStudentList;
+  filteredList = newFilteredList;
+  displayStudentList = newDisplayedList;
+  expelledStudents.push(expelledStudent[0]);
+  displayStudentList.forEach(showStudent);
+};
+
+//modal
+
+const displayModal = (event) => {
+  const studentName = event.target.parentNode.children[1].textContent;
+  const studentPicture = event.target.parentNode.children[0].src;
+
+  const getStudentImage = (oneStudent) => {
+    let firstName = oneStudent.firstName;
+    let lastName = oneStudent.lastName;
+    if (lastName === undefined) {
+      let imageName = "nophoto";
+      return (document.querySelector(
+        ".modal-picture"
+      ).src = `./${imageName}.png`);
+    }
+    if (lastName.includes("-")) {
+      lastName = lastName.split("-")[1];
+    }
+    let imageName = `${lastName.toLowerCase()}_${firstName[0].toLowerCase()}`;
+    imageName = checkIfImageExists(imageName, firstName, lastName);
+    return (document.querySelector(
+      ".modal-picture"
+    ).src = `./images/${imageName}.png`);
+  };
+
+  const student = displayStudentList.map((student) => {
+    if (studentName === student.firstName) {
+      document.querySelector("#modal_bg").classList.add("shown");
+      document.getElementById("modal").className = "";
+
+      document.getElementById("modal").classList.add("modal-content");
+
+      document.getElementById("modal").classList.add(student.house);
+
+      console.log(window.location.href);
+      console.log(getStudentImage(student));
+      document.querySelector(".name").textContent =
+        student.firstName + " " + student.lastName;
+      document.querySelector(".bloodtype").textContent = student.bloodType;
+
+      document
+        .querySelector(".expell2")
+        .addEventListener("click", () => expellStudent(event));
+      document
+        .querySelector(".add-remove-prefect")
+        .addEventListener("click", () => addPrefect(event));
+      document
+        .querySelector(".squad")
+        .addEventListener("click", () => addInquistorial(event));
+    }
+    document
+      .querySelector(".close-modal")
+      .addEventListener("click", () =>
+        document.querySelector("#modal_bg").classList.remove("shown")
+      );
+  });
+};
+
 function showStudent(oneStudent) {
   const parent = document.querySelector("template#studentTemplate").content;
   const myCopy = parent.cloneNode(true);
@@ -257,7 +372,8 @@ function showStudent(oneStudent) {
     let firstName = oneStudent.firstName;
     let lastName = oneStudent.lastName;
     if (lastName === undefined) {
-      return;
+      let noPhoto = "nophoto";
+      return (myCopy.querySelector(".picture").src = `./${noPhoto}.png`);
     }
     if (lastName.includes("-")) {
       lastName = lastName.split("-")[1];
@@ -272,29 +388,28 @@ function showStudent(oneStudent) {
   myCopy.querySelector(".nickname").textContent = oneStudent.nickName;
   myCopy.querySelector(".lastname").textContent = oneStudent.lastName;
   myCopy.querySelector(".gender").textContent = oneStudent.gender;
-  myCopy.querySelector(".prefect").addEventListener("change", addPrefect);
-  myCopy.querySelector(".expell").addEventListener("click", function () {
-    console.log(this.parentNode.children[1]);
-    const firstnameOfElement = this.parentNode.children[1].textContent;
-    const newStudentList = studentList.filter((student) => {
-      return student.firstName !== firstnameOfElement;
-    });
-    const expelledStudent = studentList.filter((student) => {
-      return student.firstName === firstnameOfElement;
-    });
-    const newFilteredList = filteredList.filter((student) => {
-      return student.firstName !== firstnameOfElement;
-    });
-    const newDisplayedList = displayStudentList.filter((student) => {
-      return student.firstName !== firstnameOfElement;
-    });
-    clearHtmlList();
-    studentList = newStudentList;
-    filteredList = newFilteredList;
-    displayStudentList = newDisplayedList;
-    expelledStudents.push(expelledStudent[0]);
-    displayStudentList.forEach(showStudent);
-  });
+  myCopy.querySelector(".blood").textContent = oneStudent.bloodType;
+  myCopy
+    .querySelector(".prefect")
+    .addEventListener("change", (event) => addPrefect(event));
+  if (oneStudent.bloodType !== "pure" && oneStudent.house !== "Slytherin") {
+    let inqCheck = myCopy.children[0].querySelector(".inq-squad");
+    let inqLabel = myCopy.children[0].querySelector(".inq-label");
+    myCopy.children[0].removeChild(inqCheck);
+    myCopy.children[0].removeChild(inqLabel);
+  }
+  if (oneStudent.bloodType === "pure" || oneStudent.house === "Slytherin") {
+    myCopy
+      .querySelector(".inq-squad")
+      .addEventListener("change", (event) => addInquistorial(event));
+  }
+  myCopy
+    .querySelector("#modalBtn")
+    .addEventListener("click", (event) => displayModal(event));
+
+  myCopy
+    .querySelector(".expell")
+    .addEventListener("click", (event) => expellStudent(event));
 
   targetStudentImage();
 

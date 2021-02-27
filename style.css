@@ -1,6 +1,49 @@
-article {
-  background: red;
-  margin-top: 10px;
+#main-info {
+  display: flex;
+  justify-content: space-around;
+}
+
+#main-info .each-house .gryffindor {
+  font-size: 30px;
+}
+#main-info .each-house .gryffindor::before {
+  content: "Gryffindor: ";
+}
+#main-info .each-house .hufflepuff {
+  font-size: 30px;
+}
+#main-info .each-house .hufflepuff::before {
+  content: "Hufflepuff: ";
+}
+#main-info .each-house .slytherin {
+  font-size: 30px;
+}
+#main-info .each-house .slytherin::before {
+  content: "Slytherin: ";
+}
+#main-info .each-house .ravenclaw {
+  font-size: 30px;
+}
+#main-info .each-house .ravenclaw::before {
+  content: "Ravenclaw: ";
+}
+#main-info .total-num {
+  font-size: 30px;
+}
+#main-info .total-num::before {
+  content: "Total: ";
+}
+#main-info .expel-stud {
+  font-size: 30px;
+}
+#main-info .expel-stud::before {
+  content: "Expalled: ";
+}
+#main-info .displayed {
+  font-size: 30px;
+}
+#main-info .displayed::before {
+  content: "All displayed: ";
 }
 
 section {
@@ -20,27 +63,204 @@ article img {
 }
 article {
   position: relative;
-  background-color: #9b4f0f;
+  background-color: #9b4e0fb6;
+  border-radius: 5px;
   text-align: center;
   display: flex;
   flex-flow: column;
-  padding: 1rem 2rem;
+  height: 440px;
+  /* flex-wrap: wrap; */
+  padding: 2rem 2rem;
   margin: 1rem 0;
-  box-shadow: 9px 7px;
+  box-shadow: -5px 5px 15px 0px;
+}
+.picture {
+  /* width: 80%; */
+}
+.name-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.firstname,
+.lastname {
+  width: fit-content;
+}
+.lastname {
+  margin-bottom: 10px;
+}
+.lastname::after {
+  content: "";
+  width: 200px;
+  height: 2px;
+  background-color: red;
+  z-index: 40;
+}
+.gender {
+  margin-bottom: 10px;
+}
+.house {
+  margin-bottom: 10px;
+}
+.blood {
+  margin-bottom: 10px;
+}
+.expell {
+  width: 60%;
+  margin: 0 auto;
+  height: 40px;
+  border-radius: 5px;
+  background-color: transparent;
+  border: 1px solid black;
+}
+.prefect-label {
+  position: absolute;
+  top: 81%;
+  left: 20%;
+}
+.prefect {
+  position: absolute;
+  top: 81%;
+}
+.inq-squad {
+  position: absolute;
+  top: 86%;
+}
+.inq-label {
+  position: absolute;
+  top: 86%;
+  left: 20%;
+}
+#modalBtn {
+  width: 50%;
+  height: 40px;
+  background-color: transparent;
+  border-radius: 5px;
+  border: 1px solid #000;
+  position: absolute;
+  top: 91%;
+  left: 25%;
 }
 
-/* .modal_bg {
-  position: fixed;
-  z-index: 10;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+.modal {
+  display: none;
+  background-size: contain;
+  position: relative;
 }
+
 .modal-content {
+  display: flex;
+  flex-direction: column;
+  padding: 0 30px;
+  align-items: center;
   background-color: #fefefe;
   border: 1px solid #7c1f17;
-  margin: 6em;
   padding: 2em;
-} */
+  height: 80vh;
+  width: 60%;
+  margin: auto;
+  background-size: 80% 100%;
+  position: relative;
+  z-index: 20;
+}
+.modal-content > button,
+div,
+img {
+  z-index: 20;
+}
+.modal-content::after {
+  content: "";
+  /* filter: blur(); */
+  height: 100%;
+  width: 100%;
+  background-color: indianred;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  opacity: 0.4;
+}
+.modal-content .modal-picture {
+  margin-top: 120px;
+  border-radius: 35px;
+  box-shadow: -10px 5px 25px 10px;
+}
+.modal-content .name {
+  font-size: 30px;
+}
+.modal-content .bloodtype {
+  font-size: 25px;
+  font-weight: 600;
+  color: #ffff;
+  margin-bottom: 20px;
+}
+.modal-content .bloodtype::before {
+  content: "blood type: ";
+}
+.expell2,
+.add-remove-prefect,
+.squad {
+  height: 40px;
+  width: 200px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  border: 2px solid rgba(128, 128, 128, 0.349);
+  background-color: rgba(128, 128, 128, 0.836);
+  box-shadow: -10px 10px 25px 5px;
+}
+
+.expell img {
+  width: 200px;
+  height: auto;
+}
+
+.shown {
+  padding-top: 30px;
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.Gryffindor {
+  background: url("./crests/gryffindor.png") no-repeat;
+  background-color: honeydew;
+  background-size: contain;
+  background-position: center;
+}
+.Slytherin {
+  background: url("/crests/slytherin.png") no-repeat;
+  background-color: #fefefe;
+  background-size: contain;
+  background-position: center;
+}
+.Hufflepuff {
+  background: url("/crests/hufflepuff.png") no-repeat;
+  background-color: #fefefe;
+  background-size: contain;
+  background-position: center;
+}
+.Ravenclaw {
+  background: url("/crests/revenclaw.png") no-repeat;
+  background-color: #fefefe;
+  background-size: contain;
+  background-position: center;
+}
+
+.modal-content img {
+  width: 150px;
+  height: auto;
+}
+.close-modal {
+  align-self: flex-end;
+  background-color: transparent;
+  font-size: 40px;
+  outline: none;
+  border: none;
+}
+.name {
+  font-family: "RocknRoll One", sans-serif;
+  color: azure;
+}
