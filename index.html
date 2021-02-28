@@ -12,7 +12,8 @@
   </head>
   <body>
     <main>
-      <h1>List</h1>
+      <h1>Hogwart's Student List 2020/2021</h1>
+      <label class="searchByName" for="searchByName">Search students:</label>
       <input type="text" id="searchByName" />
       <details id="filterConteiner">
         <button class="house">All students</button>
@@ -34,7 +35,7 @@
           <div class="ravenclaw">Ravenclaw:</div>
         </div>
         <div class="total-num">Total:</div>
-        <div class="expel-stud">Expalled:</div>
+        <div class="expel-stud">Expelled:</div>
         <div class="displayed">All displayed:</div>
       </div>
 
@@ -58,7 +59,7 @@
           </article>
         </template>
       </section>
-      <div id="modal_bg" class="modal-template">
+      <div id="modal_bg" class="modal-template hide">
         <div id="modal" class="modal-content">
           <button class="close-modal">x</button>
           <img class="modal-picture" />

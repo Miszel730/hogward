@@ -21,6 +21,7 @@ let studentList = null;
 let displayStudentList = null;
 let expelledStudents = [];
 let listSortedBy = "firstName";
+let isHacked = false;
 
 function start() {
   fetch("https://petlatkea.dk/2021/hogwarts/families.json")
@@ -55,7 +56,6 @@ const clearHtmlList = () => {
 function getUniqueListBy(arr, key) {
   return [...new Map(arr.map((item) => [item[key], item])).values()];
 }
-
 const recivedData = (allStudents) => {
   studentList = allStudents.map((student) => createStudentObject(student));
   console.log(studentList);
@@ -194,7 +194,6 @@ const getNumberOfStudents = () => {
   mainInfo.querySelector(".total-num").textContent = studentList.length;
   mainInfo.querySelector(".expel-stud").textContent = expelledStudents.length;
   mainInfo.querySelector(".displayed").textContent = displayStudentList.length;
-
   //houses
   for (let i = 0; i < eachHouse.children.length; i++) {
     let houseElem = eachHouse.children[i];
@@ -233,6 +232,7 @@ function addPrefect(event) {
         return prefect.firstName !== firstName;
       }
     );
+    event.target.checked = false;
     console.log(prefectsInTheHouses[house]);
     return;
   }
@@ -252,6 +252,11 @@ function addPrefect(event) {
 }
 
 // inquistorial squad
+const removeInq = (name) => {
+  inquistorialSquad = inquistorialSquad.filter((inquistorial) => {
+    return inquistorial.firstName !== name;
+  });
+};
 
 function addInquistorial(event) {
   let firstName = event.target.parentNode.children[1].textContent;
@@ -261,20 +266,23 @@ function addInquistorial(event) {
   let inqCheck = inquistorialSquad.filter((inquistorial) => {
     return inquistorial.firstName === firstName;
   });
-  console.log(inquistorialSquad);
-  if (inqCheck.length > 0) {
-    inquistorialSquad = inquistorialSquad.filter((inquistorial) => {
-      return inquistorial.firstName !== firstName;
-    });
-    console.log(inquistorialSquad);
-    return;
-  }
 
   if (
     potentialInq[0].bloodType === "pure" ||
-    potentialInq.house === "slytherin"
+    potentialInq[0].house === "Slytherin"
   ) {
+    if (inqCheck.length > 0) {
+      removeInq(firstName);
+      console.log(inquistorialSquad);
+      return;
+    }
     inquistorialSquad.push(potentialInq[0]);
+    if (isHacked) {
+      setTimeout(() => {
+        removeInq(firstName);
+        event.target.checked = false;
+      }, 2000);
+    }
     return;
   }
 }
@@ -290,6 +298,10 @@ const expellStudent = (event) => {
   const expelledStudent = studentList.filter((student) => {
     return student.firstName === firstnameOfElement;
   });
+  if (expelledStudent[0].firstName === "Michal") {
+    console.log("Person cannot be deleted");
+    return;
+  }
   const newFilteredList = expellStudentFromList(
     filteredList,
     firstnameOfElement
@@ -298,11 +310,12 @@ const expellStudent = (event) => {
     displayStudentList,
     firstnameOfElement
   );
-  clearHtmlList();
   studentList = newStudentList;
   filteredList = newFilteredList;
   displayStudentList = newDisplayedList;
   expelledStudents.push(expelledStudent[0]);
+  clearHtmlList();
+
   displayStudentList.forEach(showStudent);
 };
 
@@ -331,7 +344,7 @@ const displayModal = (event) => {
     ).src = `./images/${imageName}.png`);
   };
 
-  const student = displayStudentList.map((student) => {
+  displayStudentList.map((student) => {
     if (studentName === student.firstName) {
       document.querySelector("#modal_bg").classList.add("shown");
       document.getElementById("modal").className = "";
@@ -472,6 +485,40 @@ const createStudentObject = (student) => {
   StudentObject.gender = student.gender;
 
   return StudentObject;
+};
+const generateRandomBloodTypes = () => {
+  const newList = studentList.map((student) => {
+    const bloodTypes = ["pure", "half", "muggle"];
+    let randomBlood = Math.floor(Math.random() * 3);
+    if (student.bloodType === "pure") {
+      return { ...student, bloodType: bloodTypes[randomBlood] };
+    } else {
+      return { ...student, bloodType: "pure" };
+    }
+  });
+  studentList = newList;
+  displayStudentList = newList;
+};
+
+const hackTheSystem = () => {
+  const myObject = {
+    firstName: "Michal",
+    middleName: "Marco",
+    nickName: null,
+    lastName: "Kowalski",
+    gender: "boy",
+    house: "Gryffindor",
+    bloodType: "pure",
+  };
+  if (!isHacked) {
+    isHacked = true;
+    generateRandomBloodTypes();
+    studentList.push(myObject);
+    setTimeout(() => {
+      clearHtmlList();
+      displayStudentList.forEach(showStudent);
+    }, 1000);
+  }
 };
 
 document.addEventListener("DOMContentLoaded", start);
